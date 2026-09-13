@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { unlockVault, lockVault, checkVaultStatus, touchActivity } from './api/vault';
-import { Sidebar, ModuleRoute } from './components/Sidebar';
+import { Sidebar, type ModuleRoute } from './components/Sidebar';
 import { ContactsModule } from './modules/contacts/ContactsModule';
 
 function UnlockScreen({ onUnlock }: { onUnlock: (passphrase: string) => Promise<void> }) {
