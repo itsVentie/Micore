@@ -68,12 +68,12 @@ cd Micore
 2. Install frontend dependencies:
 
 ```bash
-npm install
+pnpm install
 
 ```
 
 3. Launch in development mode:
 
 ```bash
-npm run tauri dev
+pnpm run tauri dev
 
