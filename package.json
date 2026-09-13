@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "build": "tsc && vite build",
+    "preview": "vite preiew"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",

@@ -25,7 +25,11 @@ export function Sidebar({ currentRoute, onRouteChange, onLock }: SidebarProps) {
             <button
               key={item.id}
               onClick={() => onRouteChange(item.id)}
-              className={w-full text-left px-2.5 py-1.5 rounded-md text-xs font-medium transition-all }
+              className={`w-full text-left px-2.5 py-1.5 rounded-md text-xs font-medium transition-all ${
+                currentRoute === item.id
+                  ? 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/30'
+                  : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200 border border-transparent'
+              }`}
             >
               {item.label}
             </button>
@@ -35,7 +39,7 @@ export function Sidebar({ currentRoute, onRouteChange, onLock }: SidebarProps) {
 
       <button
         onClick={onLock}
-        className="w-full px-2.5 py-1.5 rounded-md text-xs font-medium bg-zinc-900 border border-zinc-800 text-rose-400 hover:bg-rose-500/10 transition-all text-center"
+        className="w-full px-2.5 py-1.5 rounded-md text-xs font-medium bg-zinc-900 border border-zinc-800 text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/20 transition-all text-center"
       >
         Lock Vault
       </button>

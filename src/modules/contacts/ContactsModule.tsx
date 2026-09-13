@@ -72,11 +72,15 @@ export function ContactsModule() {
                 setSelectedId(contact.id);
                 setIsCreating(false);
               }}
-              className={p-2.5 rounded-lg cursor-pointer transition-all }
+              className={`p-2.5 rounded-lg cursor-pointer transition-all border ${
+                selectedId === contact.id
+                  ? 'bg-zinc-800/80 border-indigo-500/50 text-zinc-100'
+                  : 'border-zinc-800/40 bg-zinc-900/20 text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200'
+              }`}
             >
-              <div className="text-sm">{contact.title}</div>
+              <div className="text-sm font-medium">{contact.title}</div>
               <div className="text-[10px] text-zinc-500 truncate">
-                {contact.payload.identities.map((i) => ${i.platform}: ).join(' • ')}
+                {contact.payload.identities.map((i) => `${i.platform}: ${i.handle}`).join(' • ')}
               </div>
             </div>
           ))}
@@ -94,7 +98,7 @@ export function ContactsModule() {
                 type="text"
                 value={name}
                 onInput={(e) => setName((e.target as HTMLInputElement).value)}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-indigo-500 text-zinc-100"
                 placeholder="e.g. Alice Vance"
                 required
               />
@@ -113,7 +117,7 @@ export function ContactsModule() {
                       setIdentities(updated);
                     }}
                     placeholder="Platform"
-                    className="w-1/3 bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1 text-xs"
+                    className="w-1/3 bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1 text-xs text-zinc-100"
                   />
                   <input
                     type="text"
@@ -124,7 +128,7 @@ export function ContactsModule() {
                       setIdentities(updated);
                     }}
                     placeholder="@handle or email"
-                    className="w-2/3 bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1 text-xs"
+                    className="w-2/3 bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1 text-xs text-zinc-100"
                   />
                 </div>
               ))}
@@ -143,7 +147,7 @@ export function ContactsModule() {
                 type="text"
                 value={tags}
                 onInput={(e) => setTags((e.target as HTMLInputElement).value)}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-indigo-500 text-zinc-100"
                 placeholder="dev, sec, ops"
               />
             </div>
@@ -154,7 +158,7 @@ export function ContactsModule() {
                 value={notes}
                 onInput={(e) => setNotes((e.target as HTMLTextAreaElement).value)}
                 rows={4}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-indigo-500 resize-none"
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-indigo-500 resize-none text-zinc-100"
                 placeholder="Private context or notes..."
               />
             </div>
