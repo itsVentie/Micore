@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
-import { fetchContacts, saveContact, ContactItem, ContactPayload } from '../../api/contacts';
+import { fetchContacts, saveContact, type ContactItem, type ContactPayload } from '../../api/contacts';
 import styles from './contacts.module.css';
 
 export function ContactsModule() {

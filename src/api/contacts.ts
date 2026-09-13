@@ -1,4 +1,4 @@
-import { createEncryptedEntity, readEncryptedEntity, Entity } from './vault';
+import { createEncryptedEntity, readEncryptedEntity, type Entity } from './vault';
 import { invoke } from '@tauri-apps/api/core';
 
 export interface ContactIdentity {
