@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "vault-app",
+    "vault-app/src-tauri",
+    "crates/core-crypto",
+    "crates/core-storage"
+]
+resolver = "2"

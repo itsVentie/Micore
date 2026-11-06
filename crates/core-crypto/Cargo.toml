@@ -1,0 +1,11 @@
+[package]
+name = "core-crypto"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+argon2 = "0.5"
+aes-gcm = "0.10"
+rand = "0.8"
+zeroize = { version = "1.7", features = ["derive"] }
+thiserror = "1.0"
