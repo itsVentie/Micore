@@ -1,0 +1,80 @@
+.authContainer {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000000;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.authCard {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 32px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  width: 420px;
+  color: #f5f5f7;
+  box-sizing: border-box;
+}
+
+.subtitle {
+  color: #86868b;
+  font-size: 14px;
+  margin-bottom: 24px;
+  letter-spacing: -0.01em;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #f5f5f7;
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input::placeholder {
+  color: #86868b;
+}
+
+.input:focus {
+  border-color: #2997ff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.button {
+  width: 100%;
+  padding: 12px;
+  background: #0071e3;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 8px;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  background: #0077ed;
+}
+
+.button:active {
+  transform: scale(0.98);
+}
+
+.error {
+  color: #ff453a;
+  font-size: 13px;
+  margin-top: 14px;
+}
