@@ -1,5 +1,6 @@
-use redb::{Database, ReadableTable, TableDefinition};
+use redb::{Database, TableDefinition};
 use std::path::Path;
+use std::sync::Arc;
 use thiserror::Error;
 
 const VAULT_TABLE: TableDefinition<&str, &[u8]> = TableDefinition::new("vault_data");
@@ -12,14 +13,22 @@ pub enum StorageError {
     Custom(String),
 }
 
+#[derive(Clone)] 
 pub struct MicoreStorage {
-    db: Database,
+    db: Arc<Database>,
 }
 
 impl MicoreStorage {
     pub fn open_or_create<P: AsRef<Path>>(path: P) -> Result<Self, StorageError> {
         let db = Database::create(path).map_err(|e| StorageError::Custom(e.to_string()))?;
-        Ok(Self { db })
+        
+        let write_txn = db.begin_write().map_err(|e| StorageError::Custom(e.to_string()))?;
+        {
+            write_txn.open_table(VAULT_TABLE).map_err(|e| StorageError::Custom(e.to_string()))?;
+        }
+        write_txn.commit().map_err(|e| StorageError::Custom(e.to_string()))?;
+
+        Ok(Self { db: Arc::new(db) })
     }
 
     pub fn set_bytes(&self, key: &str, data: &[u8]) -> Result<(), StorageError> {

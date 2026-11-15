@@ -19,17 +19,17 @@ fn create_or_open_vault(
     let salt = b"micore_default_salt_v1";
     let key = core_crypto::derive_key(&password, salt).map_err(|e| e.to_string())?;
 
-    let app_dir = app_handle.path().app_data_dir().map_err(|e| e.to_string())?;
-    std::fs::create_dir_all(&app_dir).map_err(|e| e.to_string())?;
-    
-    let storage_path = app_dir.join("vault.mic");
-
-    let storage = MicoreStorage::open_or_create(storage_path).map_err(|e| e.to_string())?;
-
     let mut state_storage = state.storage.lock().unwrap();
     let mut state_key = state.master_key.lock().unwrap();
 
-    *state_storage = Some(storage);
+    if state_storage.is_none() {
+        let app_dir = app_handle.path().app_data_dir().map_err(|e| e.to_string())?;
+        std::fs::create_dir_all(&app_dir).map_err(|e| e.to_string())?;
+        
+        let storage_path = app_dir.join("vault.mic");
+        let storage = MicoreStorage::open_or_create(storage_path).map_err(|e| e.to_string())?;
+        *state_storage = Some(storage);
+    }
     *state_key = Some(key);
 
     Ok("Vault successfully unlocked!".into())
@@ -79,30 +79,53 @@ fn get_secret(
 
 #[tauri::command]
 fn save_profile(
-    name: String,
+    first_name: String,
+    last_name: String,
     email: String,
-    avatar: String,
+    avatar_path: String,
+    app_handle: tauri::AppHandle,
     state: State<'_, AppState>,
-) -> Result<(), String> {
+) -> Result<String, String> {
     let storage_guard = state.storage.lock().unwrap();
     let master_key_guard = state.master_key.lock().unwrap();
 
     let storage = storage_guard.as_ref().ok_or("Vault is not unlocked")?;
     let master_key = master_key_guard.as_ref().ok_or("Master key is missing")?;
 
-    let (enc_name, nonce_name) = core_crypto::encrypt(master_key, name.as_bytes()).map_err(|e| e.to_string())?;
-    let mut p_name = nonce_name; p_name.extend(enc_name);
-    storage.set_bytes("profile_name", &p_name).map_err(|e| e.to_string())?;
+    let mut final_avatar_path = avatar_path.clone();
 
-    let (enc_email, nonce_email) = core_crypto::encrypt(master_key, email.as_bytes()).map_err(|e| e.to_string())?;
-    let mut p_email = nonce_email; p_email.extend(enc_email);
-    storage.set_bytes("profile_email", &p_email).map_err(|e| e.to_string())?;
+    if !avatar_path.is_empty() {
+        if let Ok(app_dir) = app_handle.path().app_data_dir() {
+            let avatars_dir = app_dir.join("avatars");
+            let _ = std::fs::create_dir_all(&avatars_dir);
+            
+            let ext = std::path::Path::new(&avatar_path)
+                .extension()
+                .and_then(|e| e.to_str())
+                .unwrap_or("png");
+            
+            let target_path = avatars_dir.join(format!("avatar.{}", ext));
 
-    let (enc_av, nonce_av) = core_crypto::encrypt(master_key, avatar.as_bytes()).map_err(|e| e.to_string())?;
-    let mut p_av = nonce_av; p_av.extend(enc_av);
-    storage.set_bytes("profile_avatar", &p_av).map_err(|e| e.to_string())?;
+            if std::fs::copy(&avatar_path, &target_path).is_ok() {
+                final_avatar_path = target_path.to_string_lossy().into_owned();
+            }
+        }
+    }
 
-    Ok(())
+    let save_encrypted = |key: &str, val: &str| -> Result<(), String> {
+        let (enc, nonce) = core_crypto::encrypt(master_key, val.as_bytes()).map_err(|e| e.to_string())?;
+        let mut payload = nonce;
+        payload.extend(enc);
+        storage.set_bytes(key, &payload).map_err(|e| e.to_string())?;
+        Ok(())
+    };
+
+    save_encrypted("profile_first_name", &first_name)?;
+    save_encrypted("profile_last_name", &last_name)?;
+    save_encrypted("profile_email", &email)?;
+    save_encrypted("profile_avatar_path", &final_avatar_path)?;
+
+    Ok(final_avatar_path)
 }
 
 #[tauri::command]
@@ -124,27 +147,56 @@ fn get_profile(
         }
     };
 
-    let name = decrypt_field("profile_name")?;
+    let first_name = decrypt_field("profile_first_name")?;
+    let last_name = decrypt_field("profile_last_name")?;
     let email = decrypt_field("profile_email")?;
-    let avatar = decrypt_field("profile_avatar")?;
+    let avatar_path = decrypt_field("profile_avatar_path")?;
+
+    let mut avatar_data_url = "".to_string();
+    if !avatar_path.is_empty() {
+        if let Ok(bytes) = std::fs::read(&avatar_path) {
+            let ext = std::path::Path::new(&avatar_path)
+                .extension()
+                .and_then(|e| e.to_str())
+                .unwrap_or("png");
+            
+            let mime = match ext.to_lowercase().as_str() {
+                "jpg" | "jpeg" => "image/jpeg",
+                "png" => "image/png",
+                "webp" => "image/webp",
+                "svg" => "image/svg+xml",
+                _ => "image/png",
+            };
+            
+            use base64::Engine;
+            let b64 = base64::engine::general_purpose::STANDARD.encode(&bytes);
+            avatar_data_url = format!("data:{};base64,{}", mime, b64);
+        }
+    }
 
     Ok(serde_json::json!({
-        "name": if name.is_empty() { "User" } else { &name },
-        "email": if email.is_empty() { "user@micore.local" } else { &email },
-        "avatar": if avatar.is_empty() { "U" } else { &avatar }
+        "first_name": first_name,
+        "last_name": last_name,
+        "email": email,
+        "avatar_path": avatar_path,
+        "avatar_url": avatar_data_url
     }))
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .manage(AppState {
             storage: Mutex::new(None),
             master_key: Mutex::new(None),
         })
         .invoke_handler(tauri::generate_handler![
             create_or_open_vault,
-            save_secret
+            save_secret,
+            get_secret,
+            save_profile,
+            get_profile 
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

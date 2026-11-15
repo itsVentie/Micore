@@ -1,0 +1,8 @@
+{
+  "name": "micore-root",
+  "private": true,
+  "scripts": {
+    "dev": "cd ui && bun run dev",
+    "build": "cd ui && bun run build"
+  }
+}

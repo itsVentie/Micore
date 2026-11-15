@@ -1,43 +1,91 @@
 <script lang="ts">
   import { invoke } from "@tauri-apps/api/core";
+  import { open } from "@tauri-apps/plugin-dialog";
   import { onMount } from "svelte";
   import styles from '../styles/Vault.module.css';
 
-  let userName = $state("");
+  let firstName = $state("");
+  let lastName = $state("");
   let userEmail = $state("");
-  let userAvatar = $state("");
+  let avatarPath = $state("");
+  let avatarUrl = $state(""); 
   
   let isEditing = $state(false);
-  let editName = $state("");
+  let editFirstName = $state("");
+  let editLastName = $state("");
   let editEmail = $state("");
-  let editAvatar = $state("");
+  let editAvatarPath = $state("");
+  let editAvatarUrl = $state(""); 
   let saveStatus = $state("");
+
+  let userInitials = $derived(
+    `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || 'U'
+  );
 
   async function loadProfile() {
     try {
       const profile: any = await invoke("get_profile");
-      userName = profile.name;
-      userEmail = profile.email;
-      userAvatar = profile.avatar;
+      firstName = profile.first_name || "";
+      lastName = profile.last_name || "";
+      userEmail = profile.email || "";
+      avatarPath = profile.avatar_path || "";
+      avatarUrl = profile.avatar_url || "";
 
-      editName = userName;
+      editFirstName = firstName;
+      editLastName = lastName;
       editEmail = userEmail;
-      editAvatar = userAvatar;
+      editAvatarPath = avatarPath;
+      editAvatarUrl = avatarUrl;
     } catch (err) {
       console.error("Failed to load profile:", err);
     }
   }
 
+  async function handleSelectAvatar() {
+    try {
+      const selected = await open({
+        multiple: false,
+        filters: [{
+          name: 'Images',
+          extensions: ['png', 'jpg', 'jpeg', 'webp', 'svg']
+        }]
+      });
+
+      if (selected && typeof selected === 'string') {
+        editAvatarPath = selected;
+        try {
+          const response = await fetch(`asset://localhost/${selected.replace(/\\/g, '/')}`);
+          const blob = await response.blob();
+          const reader = new FileReader();
+          reader.onload = () => {
+            editAvatarUrl = reader.result as string;
+          };
+          reader.readAsDataURL(blob);
+        } catch {
+          editAvatarUrl = "";
+        }
+      }
+    } catch (err) {
+      console.error("Failed to open file dialog:", err);
+    }
+  }
+
   async function handleSaveProfile() {
     try {
-      await invoke("save_profile", {
-        name: editName,
+      const newAvatarUrl: any = await invoke("save_profile", {
+        firstName: editFirstName,
+        lastName: editLastName,
         email: editEmail,
-        avatar: editAvatar || editName.slice(0, 2).toUpperCase()
+        avatarPath: editAvatarPath
       });
-      userName = editName;
+      
+      firstName = editFirstName;
+      lastName = editLastName;
       userEmail = editEmail;
-      userAvatar = editAvatar;
+      avatarPath = editAvatarPath;
+      
+      await loadProfile();
+
       isEditing = false;
       saveStatus = "Profile updated successfully!";
       setTimeout(() => saveStatus = "", 3000);
@@ -60,11 +108,15 @@
     {#if !isEditing}
       <div class={styles.profileRow}>
         <div class={styles.profileInfo}>
-          <div class={styles.avatar}>
-            {userAvatar || 'U'}
+          <div class={styles.avatarContainer}>
+            {#if avatarUrl}
+              <img src={avatarUrl} alt="Avatar" class={styles.avatarImage} />
+            {:else}
+              <div class={styles.avatarFallback}>{userInitials}</div>
+            {/if}
           </div>
           <div class={styles.profileText}>
-            <h3>{userName || 'Set your name'}</h3>
+            <h3>{firstName || lastName ? `${firstName} ${lastName}`.trim() : 'Set your name'}</h3>
             <p>{userEmail || 'Set your email'}</p>
           </div>
         </div>
@@ -73,10 +125,24 @@
     {:else}
       <div class={styles.editForm}>
         <h3>Edit Profile</h3>
+        
+        <div class={styles.avatarUploadSection}>
+          <div class={styles.avatarContainer}>
+            {#if editAvatarUrl}
+              <img src={editAvatarUrl} alt="Avatar Preview" class={styles.avatarImage} />
+            {:else}
+              <div class={styles.avatarFallback}>
+                {`${editFirstName.charAt(0)}${editLastName.charAt(0)}`.toUpperCase() || 'U'}
+              </div>
+            {/if}
+          </div>
+          <button class={styles.button} onclick={handleSelectAvatar}>Choose Image...</button>
+        </div>
+
         <div class={styles.inputGroup}>
-          <input class={styles.input} bind:value={editName} placeholder="Full Name (ФИО)" />
+          <input class={styles.input} bind:value={editFirstName} placeholder="First Name (Имя)" />
+          <input class={styles.input} bind:value={editLastName} placeholder="Last Name (Фамилия)" />
           <input class={styles.input} bind:value={editEmail} placeholder="Email" />
-          <input class={styles.input} bind:value={editAvatar} placeholder="Avatar Initials (e.g. VR)" />
         </div>
         <div class={styles.formActions}>
           <button class={styles.button} onclick={handleSaveProfile}>Save Changes</button>

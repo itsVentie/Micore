@@ -1,11 +1,16 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "enables the default permissions",
-  "windows": [
-    "main"
-  ],
+  "windows": ["*"],
   "permissions": [
-    "core:default"
+    "core:default",
+    "dialog:default",
+    "dialog:allow-open",
+    "core:path:default",
+    "core:event:default",
+    {
+      "identifier": "core:image:allow-from-path",
+      "allow": ["$APPDATA/**"]
+    }
   ]
 }
