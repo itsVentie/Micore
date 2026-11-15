@@ -1,1 +1,6 @@
 /target
+node_modules/
+dist/
+target/
+*.mic
+.DS_Store

@@ -52,6 +52,11 @@
 
 body {
   margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #09090b;
 }
 
 h1,
@@ -70,6 +75,7 @@ h1 {
     margin: 20px 0;
   }
 }
+
 h2 {
   font-size: 24px;
   line-height: 118%;
@@ -79,6 +85,7 @@ h2 {
     font-size: 20px;
   }
 }
+
 p {
   margin: 0;
 }
@@ -156,16 +163,20 @@ code {
   }
 }
 
+/* Растягиваем #app на весь экран без ограничений по ширине */
 #app {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
+  width: 100vw;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  border-inline: none;
+  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 #center {

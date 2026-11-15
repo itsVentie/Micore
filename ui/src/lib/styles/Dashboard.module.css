@@ -1,33 +1,47 @@
+:global(body) {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #09090b;
+}
+
 .dashboard {
   display: flex;
   width: 100vw;
   height: 100vh;
+  margin: 0;
+  padding: 0;
   background-color: #09090b; 
   color: #ededef;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .sidebar {
-  width: 260px;
-  background: linear-gradient(180deg, rgba(18, 18, 22, 0.8) 0%, rgba(12, 12, 15, 0.9) 100%);
+  width: 280px;
+  height: 100vh;
+  background: linear-gradient(180deg, rgba(16, 16, 20, 0.95) 0%, rgba(10, 10, 13, 0.98) 100%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  padding: 28px 16px;
+  padding: 36px 20px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid rgba(255, 255, 255, 0.06);
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .sidebar h2 {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 20px;
+  letter-spacing: 0.12em;
+  margin-bottom: 24px;
   padding-left: 12px;
   color: #71717a;
 }
@@ -35,30 +49,30 @@
 .sidebar nav {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .navButton {
   display: flex;
   align-items: center;
-  gap: 12px; 
+  gap: 14px; 
   width: 100%;
-  padding: 10px 12px;
+  padding: 12px 14px;
   background: transparent;
   border: none;
   color: #91919a;
   text-align: left;
   cursor: pointer;
-  border-radius: 8px;
-  font-size: 13.5px;
+  border-radius: 10px;
+  font-size: 14px;
   font-weight: 500;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
 }
 
 .navIcon {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   opacity: 0.6;
   transition: opacity 0.2s ease, filter 0.2s ease;
   filter: brightness(0.8);
@@ -77,43 +91,55 @@
 .active {
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .active .navIcon {
   opacity: 1;
-  filter: brightness(1.2);
+  filter: brightness(1.3);
 }
 
 .lockBtn {
   margin-top: auto;
-  background: rgba(239, 68, 68, 0.08);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(220, 38, 38, 0.06) 100%);
   color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.15);
-  padding: 11px 16px;
-  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 14px 18px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 13.5px;
-  font-weight: 500;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.08);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .lockBtn:hover {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.3);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.22) 0%, rgba(220, 38, 38, 0.12) 100%);
+  border-color: rgba(239, 68, 68, 0.45);
   color: #fca5a5;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.18);
+  transform: translateY(-1px);
 }
 
 .lockBtn:active {
-  transform: scale(0.98);
+  transform: translateY(0) scale(0.98);
 }
 
 .mainContent {
   flex: 1;
-  padding: 48px;
+  min-width: 0;
+  height: 100vh;
+  padding: 40px 56px;
   overflow-y: auto;
-  background: radial-gradient(circle at top right, rgba(30, 30, 40, 0.15), transparent 40%);
+  overflow-x: hidden;
+  background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.06), transparent 45%),
+              radial-gradient(circle at bottom left, rgba(20, 20, 30, 0.5), transparent 50%),
+              #09090b;
+  box-sizing: border-box;
 }

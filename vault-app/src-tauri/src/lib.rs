@@ -13,6 +13,7 @@ struct AppState {
 #[tauri::command]
 fn create_or_open_vault(
     password: String,
+    vault_name: Option<String>, 
     app_handle: tauri::AppHandle,
     state: State<'_, AppState>,
 ) -> Result<String, String> {
@@ -22,17 +23,33 @@ fn create_or_open_vault(
     let mut state_storage = state.storage.lock().unwrap();
     let mut state_key = state.master_key.lock().unwrap();
 
-    if state_storage.is_none() {
-        let app_dir = app_handle.path().app_data_dir().map_err(|e| e.to_string())?;
-        std::fs::create_dir_all(&app_dir).map_err(|e| e.to_string())?;
-        
-        let storage_path = app_dir.join("vault.mic");
-        let storage = MicoreStorage::open_or_create(storage_path).map_err(|e| e.to_string())?;
-        *state_storage = Some(storage);
-    }
+    let app_dir = app_handle.path().app_data_dir().map_err(|e| e.to_string())?;
+    std::fs::create_dir_all(&app_dir).map_err(|e| e.to_string())?;
+    
+    let file_name = vault_name.filter(|s| !s.trim().is_empty()).unwrap_or_else(|| "vault.mic".into());
+    let storage_path = app_dir.join(file_name);
+
+    let _exists = storage_path.exists();
+
+    let storage = MicoreStorage::open_or_create(&storage_path).map_err(|e| e.to_string())?;
+    
+    *state_storage = Some(storage);
     *state_key = Some(key);
 
-    Ok("Vault successfully unlocked!".into())
+    Ok(storage_path.to_string_lossy().into_owned())
+}
+
+#[tauri::command]
+fn get_default_vault_info(app_handle: tauri::AppHandle) -> Result<serde_json::Value, String> {
+    let app_dir = app_handle.path().app_data_dir().map_err(|e| e.to_string())?;
+    let storage_path = app_dir.join("vault.mic");
+    let exists = storage_path.exists();
+
+    Ok(serde_json::json!({
+        "path": storage_path.to_string_lossy(),
+        "name": "vault.mic",
+        "exists": exists
+    }))
 }
 
 #[tauri::command]

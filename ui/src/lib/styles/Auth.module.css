@@ -78,3 +78,82 @@
   font-size: 13px;
   margin-top: 14px;
 }
+.dbInfoBox {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  text-align: left;
+  font-size: 13px;
+}
+
+.dbHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.dbLabel {
+  color: #888;
+  font-weight: 500;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.badgeExists {
+  background: rgba(46, 204, 113, 0.15);
+  color: #2ecc71;
+}
+
+.badgeNew {
+  background: rgba(241, 196, 15, 0.15);
+  color: #f1c40f;
+}
+
+.dbPathDisplay {
+  color: #aaa;
+  word-break: break-all;
+  font-family: monospace;
+  font-size: 11px;
+  margin-bottom: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+.dbConfigRow {
+  display: flex;
+  gap: 8px;
+}
+
+.smallInput {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: #fff;
+  font-size: 12px;
+}
+
+.secondaryButton {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  color: #fff;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.secondaryButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+}

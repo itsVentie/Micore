@@ -2,7 +2,7 @@
   import { invoke } from "@tauri-apps/api/core";
   import { open } from "@tauri-apps/plugin-dialog";
   import { onMount } from "svelte";
-  import styles from '../styles/Vault.module.css';
+  import styles from '../styles/Main.module.css';
 
   let firstName = $state("");
   let lastName = $state("");
@@ -101,7 +101,7 @@
 
 <div class={styles.panel}>
   <header class={styles.headerSection}>
-    <h2>Dashboard Overview</h2>
+    <h2>Overview</h2>
   </header>
   
   <div class={styles.card}>
