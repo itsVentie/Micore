@@ -4,10 +4,10 @@
   import VaultManager from './VaultManager.svelte';
   import PasswordGenerator from './PasswordGenerator.svelte';
   import Settings from './Settings.svelte';
-  import IconOverview from '../assets/icons/table-of-contents.svg';
-  import IconVault from '../assets/icons/key-round.svg';
-  import IconGenerator from '../assets/icons/square-chart-gantt.svg';
-  import IconSettings from '../assets/icons/settings.svg';
+  import IconOverview from '../../assets/icons/table-of-contents.svg';
+  import IconVault from '../../assets/icons/key-round.svg';
+  import IconGenerator from '../../assets/icons/square-chart-gantt.svg';
+  import IconSettings from '../../assets/icons/settings.svg';
 
   interface Props {
     onLock: () => void;
