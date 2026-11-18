@@ -2,8 +2,11 @@
   import styles from '../styles/Dashboard.module.css';
   import Main from './Main.svelte';
   import VaultManager from './VaultManager.svelte';
-  import PasswordGenerator from './PasswordGenerator.svelte';
+  import PasswordGenerator from './Passwords.svelte';
   import Settings from './Settings.svelte';
+  import Edu from './Edu.svelte';
+  import Toolchain from './Toolchain.svelte';
+  import Wishlist from './Wishlist.svelte';
   import IconOverview from '../../assets/icons/table-of-contents.svg';
   import IconVault from '../../assets/icons/key-round.svg';
   import IconGenerator from '../../assets/icons/square-chart-gantt.svg';
@@ -43,6 +46,26 @@
         Passwords
       </button>
       <button 
+        class={`${styles.navButton} ${activeTab === 'edu' ? styles.active : ''}`} 
+        onclick={() => activeTab = 'edu'}
+      >
+        
+        Edu
+      </button>
+      <button 
+        class={`${styles.navButton} ${activeTab === 'toolchain' ? styles.active : ''}`} 
+        onclick={() => activeTab = 'toolchain'}
+      >
+
+        Toolchain
+      </button>
+      <button 
+        class={`${styles.navButton} ${activeTab === 'wishlist' ? styles.active : ''}`} 
+        onclick={() => activeTab = 'wishlist'}
+      >
+        Wishlist
+      </button>
+      <button 
         class={`${styles.navButton} ${activeTab === 'settings' ? styles.active : ''}`} 
         onclick={() => activeTab = 'settings'}
       >
@@ -60,6 +83,12 @@
       <VaultManager />
     {:else if activeTab === 'generator'}
       <PasswordGenerator />
+    {:else if activeTab === 'edu'}
+      <Edu />
+    {:else if activeTab === 'toolchain'}
+      <Toolchain />
+    {:else if activeTab === 'wishlist'}
+      <Wishlist />
     {:else}
       <Settings />
     {/if}

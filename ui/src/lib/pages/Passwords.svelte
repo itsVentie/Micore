@@ -1,5 +1,5 @@
 <script lang="ts">
-  import styles from '../styles/Vault.module.css';
+  import styles from '../styles/Passwords.module.css';
 </script>
 
 <div class={styles.panel}>

@@ -2,7 +2,7 @@
   import { invoke } from "@tauri-apps/api/core";
   import AuthScreen from "./lib/pages/AuthScreen.svelte";
   import Dashboard from "./lib/pages/Dashboard.svelte";
-
+  
   let password = $state("");
   let statusMessage = $state("");
   let isUnlocked = $state(false);
